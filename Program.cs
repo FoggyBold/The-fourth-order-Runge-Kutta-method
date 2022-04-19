@@ -27,8 +27,8 @@ namespace _2._1laba
         {
             try
             {
-                double a = 1.6/*0*/, b; //интервал интегрирования, в левой границе которого поставлено начальное условаие задачи
-                double y0 = 4.6/*0*/;//значение, определяющее начальное условие задачи
+                double a = /*1.6*/0, b; //интервал интегрирования, в левой границе которого поставлено начальное условаие задачи
+                double y0 = /*4.6*/0;//значение, определяющее начальное условие задачи
                 int n; //начальное количество подотрезков разбиения интервала [a,b]
                 double eps;//заданная точность метода
 
@@ -39,59 +39,66 @@ namespace _2._1laba
                 Console.Write("Введите точность метода: ");
                 eps = double.Parse(Console.ReadLine());
 
-                int temp = 0, maxTemp = 100;
-                double tempError = 0, temp2Error = 0;
-                bool flag = false;
-
-                double[,] firstMatrix = new double[n, n];
-                double[,] matrix1, matrix2;
-                do
-                {
-                    temp++;
-
-                    matrix1 = createMatrix(a, b, y0, n);
-                    matrix2 = createMatrix(a, b, y0, n * 2);
-
-                    if(temp == 1)
-                    {
-                        firstMatrix = matrix1;
-                    }
-
-                    if(tempError != 0)
-                    {
-                        temp2Error = tempError;
-                    }
-                    tempError = countError(matrix1[1, n - 1], matrix2[1, n * 2 - 1]);
-
-                    n *= 2;
-
-                    if(Math.Abs(tempError - temp2Error) < 0.000000001)
-                    {
-                        flag = true;
-                    }
-                } while (tempError > eps && temp < maxTemp && !flag);
-
-                if(tempError <= eps)
-                {
-                    Console.WriteLine("Error = 0");
-                }
-                else if(temp == maxTemp)
-                {
-                    Console.WriteLine("Error = 2");
-                }
-                else if(flag)
-                {
-                    Console.WriteLine("Error = 1");
-                }
-
-                Console.WriteLine($"x = {matrix2[0, n - 1]}; y = {matrix2[1, n - 1]}");
-                drawingGraph(firstMatrix, matrix1, matrix2);
+                getSolution(a, b, y0, n, eps);
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
             }
         }
+
+        static void getSolution(double a, double b, double y0, int n, double eps)
+        {
+            int temp = 0, maxTemp = 100;
+            double tempError = 0, temp2Error = 0;
+            bool flag = false;
+
+            double[,] firstMatrix = new double[n, n];
+            double[,] matrix1, matrix2;
+            do
+            {
+                temp++;
+
+                matrix1 = createMatrix(a, b, y0, n);
+                matrix2 = createMatrix(a, b, y0, n * 2);
+
+                if (temp == 1)
+                {
+                    firstMatrix = matrix1;
+                }
+
+                if (tempError != 0)
+                {
+                    temp2Error = tempError;
+                }
+                tempError = countError(matrix1[1, n - 1], matrix2[1, n * 2 - 1]);
+
+                n *= 2;
+
+                if (Math.Abs(tempError - temp2Error) < 0.000000001)
+                {
+                    flag = true;
+                }
+            } while (tempError > eps && temp < maxTemp && !flag);
+
+            if (tempError <= eps)
+            {
+                Console.WriteLine("Error = 0");
+            }
+            else if (temp == maxTemp)
+            {
+                Console.WriteLine("Error = 2");
+            }
+            else if (flag)
+            {
+                Console.WriteLine("Error = 1");
+            }
+
+            Console.WriteLine($"n = {matrix2.GetLength(1)}");
+            Console.WriteLine($"x = {matrix2[0, n - 1]}; y = {matrix2[1, n - 1]}");
+            drawingGraph(firstMatrix, matrix1, matrix2);
+        }
+
         static void drawingGraph(double[,] matrix1, double[,] matrix2, double[,] matrix3)
         {
             try
@@ -202,14 +209,14 @@ namespace _2._1laba
             return h * f(x + h, y + k3);
         }
 
-        private static double f(double x, double y)
-        {
-            return x - y / 10;
-        }
-
         //private static double f(double x, double y)
         //{
-        //    return Math.Cos(y) / (1.5 + x) + 0.1 * y * y;
+        //    return x - y / 10;
         //}
+
+        private static double f(double x, double y)
+        {
+            return Math.Cos(y) / (1.5 + x) + 0.1 * y * y;
+        }
     }
 }
